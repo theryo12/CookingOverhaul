@@ -30,6 +30,8 @@ namespace CookingOverhaul.Content.Items.Hoes
 
         public override string Texture => "Terraria/Images/Item_" + ItemID.PickaxeAxe;
 
-        public override int Area => 1;
+        public override int Area => 0;
+
+        public override int Range  => 5;
     }
 }

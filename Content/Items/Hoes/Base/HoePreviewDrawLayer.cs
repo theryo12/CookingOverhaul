@@ -28,7 +28,7 @@ namespace CookingOverhaul.Content.Items.Hoes.Base
 
             for (var x = cursorTileX - hoe.Area; x <= cursorTileX + hoe.Area; x++)
             {
-                if (Vector2.Distance(new Vector2(x, cursorTileY), player.Center.ToTileCoordinates().ToVector2()) > hoe.Area)
+                if (Vector2.Distance(new Vector2(x, cursorTileY), player.Center.ToTileCoordinates().ToVector2()) > hoe.Range)
                     continue;
 
                 var tile = Main.tile[x, cursorTileY];
@@ -43,7 +43,7 @@ namespace CookingOverhaul.Content.Items.Hoes.Base
                                                         TextureAssets.MagicPixel.Value,
                                                         rect,
                                                         null,
-                                                        new Color(255, 255, 0, 128), // Semi-transparent fill
+                                                        new Color(255, 255, 0, 0.5f), // Semi-transparent fill
                                                         0f,
                                                         Vector2.Zero,
                                                         SpriteEffects.None
