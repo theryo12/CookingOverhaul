@@ -8,15 +8,22 @@ namespace CookingOverhaul.Content.Items.Hoe
 {
     public abstract class BaseHoe : ModItem
     {
-        public static readonly Dictionary<int, int> TileToSoil = new()
+        private static readonly Dictionary<int, int> s_tileToSoil = new Dictionary< int, int >
         {
             { TileID.Dirt, TileID.Dirt },
         };
-        public abstract void PrePlow(ref int area);
+
+        protected abstract void PrePlow(ref int area);
 
         public override bool? UseItem(Player player)
         {
-            int area = 1;
+            if (Main.netMode == NetmodeID.Server)
+            {
+                NetMessage.SendData(MessageID.TileManipulation, -1, -1, null);
+                return true;
+            }
+
+            var area = 1;
             PrePlow(ref area);
 
             PlowArea(area);
@@ -25,40 +32,41 @@ namespace CookingOverhaul.Content.Items.Hoe
 
         private static void PlowArea(int area)
         {
-            int cursorTileX = Player.tileTargetX;
-            int cursorTileY = Player.tileTargetY;
+            var cursorTileX = Player.tileTargetX;
+            var cursorTileY = Player.tileTargetY;
 
-            for (int x = cursorTileX - area; x <= cursorTileX + area; x++)
+            for (var x = cursorTileX - area; x <= cursorTileX + area; x++)
             {
-                Tile tile = Main.tile[x, cursorTileY];
+                var tile = Main.tile[x, cursorTileY];
 
-                if (tile.HasTile && TileToSoil.TryGetValue(tile.TileType, out int soilType))
+                if (!tile.HasTile || !s_tileToSoil.TryGetValue(tile.TileType, out var soilType))
                 {
-                    if (!TilePlowable(tile))
-                    {
-                        continue;
-                    }
-
-
-                    PlowAction(x, cursorTileY, soilType);
+                    continue;
                 }
+                if (!TilePlowable(tile))
+                {
+                    continue;
+                }
+
+
+                PlowAction(x, cursorTileY, soilType);
             }
         }
 
-        public static bool TilePlowable(Tile tile)
+        private static bool TilePlowable(Tile tile)
         {
-            if (tile.LiquidAmount > 0 || tile.Slope > 0 || tile.IsHalfBlock || tile.TopSlope)
-            {
-                return false;
-            }
-
-            return true;
+            return tile is { LiquidAmount: <= 0, Slope: <= 0, IsHalfBlock: false, TopSlope: false };
         }
 
-        public static void PlowAction(int x, int y, int soilType)
+        private static void PlowAction(int x, int y, int soilType)
         {
             WorldGen.KillTile(x, y, noItem: true);
             WorldGen.PlaceTile(x, y, soilType); 
+            
+            if (Main.netMode == NetmodeID.MultiplayerClient)
+            {
+                NetMessage.SendData(MessageID.TileManipulation, -1, -1, null, x, y, soilType);
+            }
         }
     }
 
@@ -78,7 +86,7 @@ namespace CookingOverhaul.Content.Items.Hoe
 
         public override string Texture => "Terraria/Images/Item_" + ItemID.PickaxeAxe;
 
-        public override void PrePlow(ref int area)
+        protected override void PrePlow(ref int area)
         {
             area = 5;
         }
