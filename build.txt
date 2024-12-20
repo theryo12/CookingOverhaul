@@ -1,0 +1,3 @@
+displayName = Ryo&#39;s Cooking Overhaul
+author = ryo
+version = 0.1
