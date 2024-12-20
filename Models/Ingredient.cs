@@ -1,4 +1,5 @@
-﻿using Terraria;
+﻿using System;
+using Terraria;
 
 namespace CookingOverhaul.Models
 {
@@ -41,7 +42,7 @@ namespace CookingOverhaul.Models
     ///     The <see cref="FoodCategories.Types"/> and <see cref="FoodCategories.Sources"/> provide predefined values 
     ///     for the <see cref="Category"/> and <see cref="Source"/> properties, respectively.
     /// </remarks>
-    public readonly struct Ingredient(Item item, string caregory, string source)
+    public readonly struct Ingredient(Item item, string category, string source) : IEquatable< Ingredient >
     {
         /// <summary>
         ///     The in-game item that represents this ingredient.
@@ -52,7 +53,7 @@ namespace CookingOverhaul.Models
         ///     The category of this ingredient, such as Meat, Vegetable, or Fruit.
         ///     See <see cref="FoodCategories.Types"/> for predefined categories.
         /// </summary>
-        public readonly string Category { get; init; } = caregory;
+        public readonly string Category { get; init; } = category;
 
         /// <summary>
         ///     The source of this ingredient, such as Fishing, Farming, or Foraging.
@@ -77,7 +78,7 @@ namespace CookingOverhaul.Models
         {
             unchecked
             {
-                int hash = 17;
+                var hash = 17;
                 hash = hash * 31 + Item.type.GetHashCode();
                 hash = hash * 31 + (Category?.GetHashCode() ?? 0);
                 hash = hash * 31 + (Source?.GetHashCode() ?? 0);
@@ -93,6 +94,11 @@ namespace CookingOverhaul.Models
         public static bool operator !=(Ingredient left, Ingredient right)
         {
             return !(left == right);
+        }
+
+        public bool Equals(Ingredient other)
+        {
+            return Equals(Item, other.Item) && Category == other.Category && Source == other.Source;
         }
     }
 }

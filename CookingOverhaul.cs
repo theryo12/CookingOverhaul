@@ -1,9 +1,3 @@
-using CookingOverhaul.Content.Items.Hoe;
-using CookingOverhaul.NetCode;
-using System;
-using System.IO;
-using Terraria;
-using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CookingOverhaul

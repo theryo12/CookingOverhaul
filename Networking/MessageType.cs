@@ -1,4 +1,4 @@
-﻿namespace CookingOverhaul.NetCode
+﻿namespace CookingOverhaul.Networking
 {
     public enum MessageType : byte
     {
