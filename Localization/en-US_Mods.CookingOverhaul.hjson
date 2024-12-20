@@ -1,6 +1,10 @@
 Items: {
 	WoodenHoe: {
 		DisplayName: Wooden Hoe
-		Tooltip: ""
+		Tooltip:
+			'''
+			A reliable but sluggish tool for turning tiles to soil. 
+			It'll get the job done... eventually.
+			'''
 	}
 }
